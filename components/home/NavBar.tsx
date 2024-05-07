@@ -1,9 +1,10 @@
 import React from "react";
-import { View, StyleSheet, Image } from "react-native";
+import { View, StyleSheet, Image, Pressable } from "react-native";
 // icons
 import { FontAwesome5 } from "@expo/vector-icons";
 import { Ionicons } from "@expo/vector-icons";
-import { EvilIcons } from "@expo/vector-icons";
+import { Feather } from '@expo/vector-icons';
+import { router } from "expo-router";
 function NavBar() {
   return (
     <View style={styles.navContainer}>
@@ -21,7 +22,9 @@ function NavBar() {
           <Ionicons name="notifications-outline" size={24} color="black" />
         </View>
         <View style={styles.icon}>
-          <EvilIcons name="search" size={24} color="black" />
+          <Pressable onPress={()=>router.navigate('/search')}>
+        <Feather name="search" size={24} color="black" />
+        </Pressable>
         </View>
       </View>
     </View>

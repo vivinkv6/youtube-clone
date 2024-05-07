@@ -1,11 +1,13 @@
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
 import { useFonts } from 'expo-font';
-import { Stack } from 'expo-router';
+import { router, Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { useEffect } from 'react';
 
 import { useColorScheme } from '@/components/useColorScheme';
+import { Image, Pressable, View } from 'react-native';
+import { Feather } from '@expo/vector-icons';
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -52,6 +54,21 @@ function RootLayoutNav() {
       <Stack>
         <Stack.Screen name="(tabs)" options={{ headerShown: false, }} />
         <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
+        <Stack.Screen name='search/index' options={{headerShown:false,presentation:'modal'}}/>
+        <Stack.Screen name='search/[query]' options={{headerShown:false,presentation:'modal'}}/>
+        <Stack.Screen name='video/[videoId]/[channelId]/index' options={{
+          headerLeft:()=>{
+            return(
+              <View style={{display:'flex',flexDirection:'row',gap:10,alignItems:'center'}}>
+                <Pressable onPress={()=>router.back()}>
+               <Feather name="arrow-left" size={24} color="black" />
+               </Pressable>
+              <Image source={require('@/assets/images/homelogo.jpg')} style={{ width:100,height:60}}/>
+              </View>
+            )
+          },
+          title:''
+        }}/>
       </Stack>
     </ThemeProvider>
   );

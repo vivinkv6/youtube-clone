@@ -7,17 +7,19 @@ import {
   Image,
   Text,
   ActivityIndicator,
+  Pressable,
 } from "react-native";
 import { useCategoryStore } from "@/store/categoryStore";
+import { router } from "expo-router";
 
-function Card() {
-  const categoryId = useCategoryStore((state) => state.categoryId);
-  const { data, loading, error } = useFetch(
-    `https://www.googleapis.com/youtube/v3/videos?part=snippet&chart=mostPopular&maxResults=50&regionCode=IN&videoCategoryId=${categoryId}&key=${process.env.EXPO_PUBLIC_API_KEY}`
-  );
-  console.log("cards");
+type DataProp = {
+  data: [] | null;
+  loading: boolean;
+  error: unknown;
+  type?:string
+};
 
-  console.log(data);
+function Card({ data, loading, error,type }: DataProp) {
 
   if (loading) {
     return (
@@ -31,28 +33,43 @@ function Card() {
     <FlatList
       data={data?.items}
       renderItem={({ item }) => {
-        return(
-        <View style={{marginTop:20}}>
-           
-          <Image
-            source={{ uri: item.snippet.thumbnails.standard.url }}
-            style={{
-              width: '100%',
-              height: 220
-            }}
-          />
-          <View style={{padding:10}}>
-          <Text style={{fontWeight:'700',fontSize:18}}>{item.snippet.title}</Text>
-        <Text style={{fontSize:15,fontWeight:'500',color:'gray'}}>{item.snippet.channelTitle}</Text>
-        </View>
-        </View>
-        )
+        return (
+          <>
+          {item?.snippet  && 
+          <Pressable onPress={() => router.navigate(`/video/${item?.id}/${item?.snippet?.channelId }`)}>
+            <View style={{ marginTop: 20 }}>
+              <Image
+                source={{
+                  uri: item.snippet.thumbnails.standard
+                    ? item.snippet.thumbnails.standard.url
+                    : item.snippet.thumbnails.high.url,
+                }}
+                style={{
+                  width: "100%",
+                  height: 220,
+                }}
+              />
+              <View style={{ padding: 10 }}>
+                <Text style={{ fontWeight: "700", fontSize: 18 }}>
+                  {item.snippet.title.length > 80
+                    ? item.snippet?.title?.slice(0, 80) + "..."
+                    : item.snippet.title}
+                </Text>
+                <Text
+                  style={{ fontSize: 15, fontWeight: "500", color: "gray" }}
+                >
+                  {item.snippet.channelTitle}
+                </Text>
+              </View>
+            </View>
+          </Pressable>
+          }
+          </>
+        );
       }}
       showsVerticalScrollIndicator={true}
     />
   );
 }
-
-const styles = StyleSheet.create({});
 
 export default Card;
